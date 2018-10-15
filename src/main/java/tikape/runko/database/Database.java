@@ -48,8 +48,20 @@ public class Database {
                 + "    kysymys_teksti varchar(1024)"
                 + ");");
 
+        lista.add("DROP TABLE IF EXISTS Vastaus;");
+
+        lista.add("CREATE TABLE Vastaus ("
+                + "    id             integer PRIMARY KEY,"
+                + "    kysymys_id     integer,"
+                + "    vastaus_teksti varchar(1024),"
+                + "    FOREING KEY kysymys_id REFERENCES Kysymys (id)"
+                + ");");
+
         for (int i = 0; i < 10; i++) {
-            lista.add("INSERT INTO Kysymys (kurssi, aihe, kysymys_teksti) VALUES ('kurssi_" + i + "', 'aihe_" + i + "', 'kysymysteksti_" + i + "');");
+            lista.add("INSERT INTO Kysymys (id, kurssi, aihe, kysymys_teksti) VALUES (" + i +", 'kurssi_" + i + "', 'aihe_" + i + "', 'kysymysteksti_" + i + "');");
+            for (int j = 0; j < 3; j++) {
+                lista.add("INSERT INTO Vastaus (kysymys_id, vastaus_teksti) VALUES (" + i + ", 'vastaus_" + j + "');");
+            }
         }
 
         return lista;

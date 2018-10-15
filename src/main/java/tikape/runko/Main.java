@@ -1,11 +1,14 @@
 package tikape.runko;
 
 import java.util.HashMap;
+import java.util.List;
 import spark.ModelAndView;
 import static spark.Spark.*;
 import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.Database;
 import tikape.runko.database.KysymysDao;
+import tikape.runko.database.VastausDao;
+import tikape.runko.domain.Kysymys;
 
 public class Main {
 
@@ -14,6 +17,7 @@ public class Main {
         database.init();
 
         KysymysDao kysymysDao = new KysymysDao(database);
+        VastausDao vastausDao = new VastausDao(database, kysymysDao);
 
         get("/", (req, res) -> {
             HashMap map = new HashMap<>();
@@ -29,7 +33,11 @@ public class Main {
 
         get("/kysymykset/:id", (req, res) -> {
             HashMap map = new HashMap<>();
-            map.put("kysymys", kysymysDao.findOne(Integer.parseInt(req.params("id"))));
+            Kysymys kysymys = kysymysDao.findOne(Integer.parseInt(req.params("id")));
+            map.put("kysymys", kysymys);
+            List vastaukset = vastausDao.findByKysymys(kysymys);
+            map.put("lkm", vastaukset.size());
+            map.put("vastaukset", vastaukset);
 
             return new ModelAndView(map, "kysymys");
         }, new ThymeleafTemplateEngine());

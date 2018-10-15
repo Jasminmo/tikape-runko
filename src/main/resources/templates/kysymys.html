@@ -12,6 +12,17 @@
             <li>Kurssi: <span th:text="${kysymys.kurssi}">kurssi</span></li>
             <li>Aihe: <span th:text="${kysymys.aihe}">aihe</span></li>
         </ul>
+
         <p th:text="${kysymys.kysymysTeksti}">teksti</p>
+
+        <h1>Vastausvaihtoehdot:</h1>
+
+        <ol>
+            <li th:each="vastaus : ${vastaukset}">
+                <ul>
+                    <li>Vastausteksti: <span th:text="${vastaus.vastausTeksti}">vastaus</span></li>
+                </ul>
+            </li>
+        </ol>
     </body>
 </html>
