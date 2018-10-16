@@ -54,13 +54,14 @@ public class Database {
                 + "    id             integer PRIMARY KEY,"
                 + "    kysymys_id     integer,"
                 + "    vastaus_teksti varchar(1024),"
+                + "    oikein         boolean,"
                 + "    FOREING KEY kysymys_id REFERENCES Kysymys (id)"
                 + ");");
 
         for (int i = 0; i < 10; i++) {
             lista.add("INSERT INTO Kysymys (id, kurssi, aihe, kysymys_teksti) VALUES (" + i +", 'kurssi_" + i + "', 'aihe_" + i + "', 'kysymysteksti_" + i + "');");
             for (int j = 0; j < 3; j++) {
-                lista.add("INSERT INTO Vastaus (kysymys_id, vastaus_teksti) VALUES (" + i + ", 'vastaus_" + j + "');");
+                lista.add("INSERT INTO Vastaus (kysymys_id, vastaus_teksti, oikein) VALUES (" + i + ", 'vastaus_" + j + "', 0);");
             }
         }
 

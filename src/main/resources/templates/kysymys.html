@@ -14,14 +14,26 @@
         </ul>
 
         <p th:text="${kysymys.kysymysTeksti}">teksti</p>
+        <form th:action="@{~/kysymykset/delete/{id}(id=${kysymys.id})}" method="POST">
+            <input type="submit" value="Poista"/>
+        </form>
 
-        <h1>Vastausvaihtoehdot:</h1>
+        <h3>Lisää Vastaus</h3>
+        <form method="POST" th:action="@{~/kysymykset/{id}(id=${kysymys.id})}">
+            Teksti:  <input type="text" name="vastausTeksti"/><br/>
+            Oikein: <input type="checkbox" name="oikein" /><br/>
+            <input type="submit" value="Lisää kysymys"/>
+        </form>
+
+        <h1>Vastaukset:</h1>
 
         <ol>
             <li th:each="vastaus : ${vastaukset}">
-                <ul>
-                    <li>Vastausteksti: <span th:text="${vastaus.vastausTeksti}">vastaus</span></li>
-                </ul>
+                <span th:text="${vastaus.vastausTeksti}">vastaus</span>
+                <span th:if="${vastaus.oikein}">(Oikein)</span>
+                <form th:action="@{~/vastaukset/delete/{id}(id=${vastaus.id})}" method="POST">
+                    <input type="submit" value="Poista"/>
+                </form>
             </li>
         </ol>
     </body>

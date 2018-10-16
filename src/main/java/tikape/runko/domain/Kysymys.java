@@ -1,6 +1,6 @@
 package tikape.runko.domain;
 
-public class Kysymys {
+public class Kysymys implements AbstractNamedObject {
 
     private Integer id;
     private String kurssi;

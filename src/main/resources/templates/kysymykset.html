@@ -8,6 +8,16 @@
 
     <body>
         <h1>Kysymykset</h1>
+        
+        
+
+        <h3>Lisää Kysymys</h3>
+        <form method="POST" action="/kysymykset">
+            Kurssi:  <input type="text" name="kurssi"/><br/>
+            Aihe:  <input type="text" name="aihe"/><br/>
+            Teksti:  <input type="text" name="kysymysTeksti"/><br/>
+            <input type="submit" value="Lisää kysymys"/>
+        </form>
 
         <ol>
             <li th:each="kysymys: ${kysymykset}">

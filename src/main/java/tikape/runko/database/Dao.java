@@ -9,5 +9,9 @@ public interface Dao<T, K> {
 
     List<T> findAll() throws SQLException;
 
+    public List<T> findbyInt(String columnName, Integer key) throws SQLException;
+
+    public T saveOrUpdate(T object) throws SQLException;
+
     void delete(K key) throws SQLException;
 }

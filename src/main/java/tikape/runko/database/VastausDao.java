@@ -8,91 +8,70 @@ import java.util.ArrayList;
 import java.util.List;
 import tikape.runko.domain.*;
 
-public class VastausDao implements Dao<Vastaus, Integer> {
+public class VastausDao extends AbstractNamedObjectDao<Vastaus> {
 
-    private Database database;
     private Dao<Kysymys, Integer> kysymysDao;
 
     public VastausDao(Database database, Dao<Kysymys, Integer> kysymysDao) {
-        this.database = database;
+        super(database, "vastaus");
         this.kysymysDao = kysymysDao;
     }
 
+    public List<Vastaus> findByKysymys(Kysymys kysymys) throws SQLException {
+        return findbyInt("kysymys_id", kysymys.getId());
+    }
+
     @Override
-    public Vastaus findOne(Integer key) throws SQLException {
-        Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Vastaus WHERE id = ?");
-        stmt.setObject(1, key);
-
-        ResultSet rs = stmt.executeQuery();
-        boolean hasOne = rs.next();
-        if (!hasOne) {
-            return null;
-        }
-
+    public Vastaus createFromRow(ResultSet rs) throws SQLException {
         Integer id = rs.getInt("id");
         Kysymys kysymys = kysymysDao.findOne(rs.getInt("kysymys_id"));
         String teksti = rs.getString("vastaus_teksti");
-
-        Vastaus vastaus = new Vastaus(id, kysymys, teksti);
-
-        rs.close();
-        stmt.close();
-        connection.close();
-
-        return vastaus;
+        Boolean oikein = rs.getBoolean("oikein");
+        return new Vastaus(id, kysymys, teksti, oikein);
     }
 
     @Override
-    public List<Vastaus> findAll() throws SQLException {
+    protected Vastaus save(Vastaus vastaus) throws SQLException {
 
-        Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Vastaus");
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO Vastaus"
+                + " (kysymys_id, vastaus_teksti, oikein)"
+                + " VALUES (?, ?, ?)");
+        stmt.setInt(1, vastaus.getKysymys().getId());
+        stmt.setString(2, vastaus.getVastausTeksti());
+        stmt.setBoolean(3, vastaus.getOikein());
+
+        stmt.executeUpdate();
+        stmt.close();
+
+        stmt = conn.prepareStatement("SELECT * FROM Vastaus"
+                + " WHERE kysymys_id = ? AND vastaus_teksti = ?");
+        stmt.setInt(1, vastaus.getKysymys().getId());
+        stmt.setString(2, vastaus.getVastausTeksti());
 
         ResultSet rs = stmt.executeQuery();
-        List<Vastaus> vastaukset = new ArrayList<>();
-        while (rs.next()) {
-            Integer id = rs.getInt("id");
-            Kysymys kysymys = kysymysDao.findOne(rs.getInt("kysymys_id"));
-            String teksti = rs.getString("vastaus_teksti");
-            Vastaus vastaus = new Vastaus(id, kysymys, teksti);
+        rs.next(); 
+        Vastaus v = createFromRow(rs);
 
-            vastaukset.add(vastaus);
-        }
-
-        rs.close();
         stmt.close();
-        connection.close();
-
-        return vastaukset;
-    }
-
-    public List<Vastaus> findByKysymys(Kysymys kysymys) throws SQLException {
-
-        Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Vastaus where kysymys_id is ?");
-        stmt.setObject(1, kysymys.getId());
-
-        ResultSet rs = stmt.executeQuery();
-        List<Vastaus> vastaukset = new ArrayList<>();
-        while (rs.next()) {
-            Integer id = rs.getInt("id");
-            String teksti = rs.getString("vastaus_teksti");
-            Vastaus vastaus = new Vastaus(id, kysymys, teksti);
-
-            vastaukset.add(vastaus);
-        }
-
         rs.close();
-        stmt.close();
-        connection.close();
+        conn.close();
 
-        return vastaukset;
+        return v;
     }
 
     @Override
-    public void delete(Integer key) throws SQLException {
+    protected Vastaus update(Vastaus object) throws SQLException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public void deleteByKysymys(Kysymys k) throws SQLException {
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("DELETE FROM " + tableName + " WHERE kysymys_id = ?");
+        stmt.setInt(1, k.getId());
+        stmt.executeUpdate();
+        stmt.close();
+        conn.close();
     }
 
 }
