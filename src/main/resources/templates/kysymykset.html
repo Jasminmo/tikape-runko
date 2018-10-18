@@ -8,8 +8,6 @@
 
     <body>
         <h1>Kysymykset</h1>
-        
-        
 
         <h3>Lisää Kysymys</h3>
         <form method="POST" action="/kysymykset">
@@ -21,7 +19,7 @@
 
         <ol>
             <li th:each="kysymys: ${kysymykset}">
-                <a th:href="${'/kysymykset/' + kysymys.id}">linkki</a>
+                <a th:href="${'/kysymykset/' + kysymys.id}"><span th:text="${kysymys.kysymysTeksti}">Nimi</span></a>
             </li>
         </ol>
     </body>
