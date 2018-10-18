@@ -15,7 +15,7 @@ Sovellus tarjoamat toiminnallisuudet ovat:
 4. Kysymysten katsoaminen. Kysymystä näyttävästä sivusta näkee siihen liittyvät vastaukset.
 
 ### Luokkakaavio
-![Luokkakaavio](https://yuml.me/diagram/classy/class/[Kysymys|(pk) id:Integer; kurssi:String; aihe:String; kysymys_teksti:String;]1-*[Vastaus|(pk) id:Integer; (fk) kysymys_id:Integer; vastaus_teksti:String; oikein:Boolean;])
+![Luokkakaavio](img/tietokantakaavio.png)
 
 ## Projektin linkit
 [Github repositio](https://github.com/Jasminmo/tikape-runko)
