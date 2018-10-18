@@ -67,12 +67,12 @@ public class Main {
 
         post("/kysymykset/:id", (req, res) -> {
             Kysymys kysymys = kysymysDao.findOne(Integer.parseInt(req.params("id")));
-            System.out.println(req.queryString());
-            boolean oikein = false;
-            if (!req.queryParams("oikein").equals("null")) {
-                oikein = true;
+            boolean arvo = true;
+            String oikein = req.queryParams("oikein");
+            if (oikein == null || oikein.equals("null")) {
+                arvo = false;
             }
-            Vastaus vastaus = new Vastaus(null, kysymys, req.queryParams("vastausTeksti"), oikein);
+            Vastaus vastaus = new Vastaus(null, kysymys, req.queryParams("vastausTeksti"), arvo);
             vastausDao.saveOrUpdate(vastaus);
             res.redirect("/kysymykset/" + kysymys.getId());
             return "";
