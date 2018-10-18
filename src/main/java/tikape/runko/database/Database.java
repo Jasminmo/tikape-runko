@@ -42,7 +42,7 @@ public class Database {
         lista.add("DROP TABLE IF EXISTS Kysymys;");
 
         lista.add("CREATE TABLE Kysymys ("
-                + "    id             integer PRIMARY KEY,"
+                + "    id             sequence PRIMARY KEY,"
                 + "    kurssi         varchar(128),"
                 + "    aihe           varchar(128),"
                 + "    kysymys_teksti varchar(1024)"
@@ -51,7 +51,7 @@ public class Database {
         lista.add("DROP TABLE IF EXISTS Vastaus;");
 
         lista.add("CREATE TABLE Vastaus ("
-                + "    id             integer PRIMARY KEY,"
+                + "    id             sequence PRIMARY KEY,"
                 + "    kysymys_id     integer,"
                 + "    vastaus_teksti varchar(1024),"
                 + "    oikein         boolean,"

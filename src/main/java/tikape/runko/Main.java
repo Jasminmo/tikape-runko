@@ -14,7 +14,17 @@ import tikape.runko.domain.Vastaus;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        Database database = new Database("jdbc:sqlite:db/database.db");
+
+        if (System.getenv("PORT") != null) {
+            port(Integer.valueOf(System.getenv("PORT")));
+        }
+
+        String dbURL = System.getenv("JDBC_DATABASE_URL");
+        if (dbURL == null || dbURL.length() == 0) {
+            dbURL = "jdbc:sqlite:db/database.db";
+        }
+
+        Database database = new Database(dbURL);
         database.init();
 
         KysymysDao kysymysDao = new KysymysDao(database);
@@ -45,10 +55,10 @@ public class Main {
             Kysymys kysymys = kysymysDao.findOne(Integer.parseInt(req.params("id")));
             map.put("kysymys", kysymys);
             List<Vastaus> vastaukset = vastausDao.findByKysymys(kysymys);
-            for (Vastaus v: vastaukset) {
+            for (Vastaus v : vastaukset) {
                 System.out.println(v.getOikein());
             }
-            
+
             map.put("lkm", vastaukset.size());
             map.put("vastaukset", vastaukset);
 
